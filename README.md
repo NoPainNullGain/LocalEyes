@@ -83,10 +83,12 @@ Edit `~/.claude/skills/local-eyes/config.json`:
 | `timeout_seconds` | Max wait (increase for large images or slow GPUs) |
 | `temperature` | 0.0 = strictly factual, 1.0 = creative descriptions |
 
-Override any setting per-session:
-```bash
-export OLLAMA_VISION_MODEL="qwen3-vl:latest"
-```
+Override any setting for a single session:
+
+**PowerShell:** `$env:OLLAMA_VISION_MODEL = "qwen3-vl:latest"`
+**Bash/Zsh:** `export OLLAMA_VISION_MODEL="qwen3-vl:latest"`
+
+Environment variables override `config.json` — useful for trying a new model without editing files.
 
 ---
 

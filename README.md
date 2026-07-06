@@ -1,4 +1,4 @@
-# 👁️ ClaudeLocalEyes
+# 👁️ LocalEyes
 
 **Give Claude Code working eyes using your local GPU.** No cloud APIs, no uploads, no cost. A local Ollama vision model converts screenshots into text descriptions Claude can read. Private, fast, free.
 
@@ -31,8 +31,8 @@ pip install Pillow
 
 ### Install
 ```bash
-git clone https://github.com/NoPainNullGain/ClaudeLocalEyes.git
-cd ClaudeLocalEyes
+git clone https://github.com/NoPainNullGain/LocalEyes
+cd LocalEyes
 python install.py
 ```
 
@@ -145,7 +145,7 @@ export OLLAMA_VISION_MODEL="qwen3-vl:latest"
 ## Files
 
 ```
-ClaudeLocalEyes/
+LocalEyes/
 ├── vision.py       # Engine: screen capture, clipboard, Ollama API
 ├── SKILL.md        # Instructions Claude reads to use its eyes
 ├── config.json     # User settings — edit, don't touch code

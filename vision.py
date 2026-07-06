@@ -30,7 +30,6 @@ import os
 import io
 import json
 import base64
-import tempfile
 import urllib.request
 from pathlib import Path
 

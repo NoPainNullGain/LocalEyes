@@ -12,7 +12,7 @@ LocalEyes gives text-only models local vision. Your screen stays on your machine
 
 ![LocalEyes demo](demo.gif)
 
-The model takes a screenshot, reads error messages from VS Code, then captures its own display to check build output — all locally, no cloud involved.
+DeepSeek starts blind — then LocalEyes gives it sight. The model describes the app, understands the UI, and can take its own screenshots during agentic work. All local.
 
 ---
 
@@ -34,7 +34,9 @@ python install.py
 ### Verify
 ```bash
 # Press Win+Shift+S to screenshot something, then:
-python ~/.claude/skills/local-eyes/vision.py
+python ~/.claude/skills/local-eyes/vision.py   # PowerShell / Git Bash
+# Or on cmd.exe:
+python %USERPROFILE%\.claude\skills\local-eyes\vision.py
 ```
 
 ---
@@ -144,7 +146,7 @@ Environment variables override `config.json` — useful for trying a new model w
 ```
 LocalEyes/
 ├── vision.py       # Engine: screen capture, clipboard, Ollama API
-├── SKILL.md        # Instructions Claude reads to use its eyes
+├── SKILL.md        # Instructions the model reads to use its eyes
 ├── config.json     # User settings — edit, don't touch code
 ├── install.py      # One-command installer
 ├── LICENSE         # MIT

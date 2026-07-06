@@ -10,7 +10,7 @@ LocalEyes gives text-only models local vision. Your screen stays on your machine
 
 ### Demo
 
-![LocalEyes demo](demo.gif)
+![LocalEyes demo](demo.gif?v=2)
 
 DeepSeek starts blind — then LocalEyes gives it sight. The model describes the app, understands the UI, and can take its own screenshots during agentic work. All local.
 

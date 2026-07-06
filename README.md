@@ -95,14 +95,14 @@ Environment variables override `config.json` — useful for trying a new model w
 ## How it works
 
 ```
-┌──────────────────────────┐       ┌─────────────────────────┐
-│   Claude Code            │       │  Your machine (Ollama)   │
-│                          │       │                         │
-│  Your model (text)       │──→──→│  qwen2.5vl:7b (vision)   │
+┌──────────────────────────┐      ┌─────────────────────────┐
+│   Claude Code            │      │  Your machine (Ollama)  │
+│                          │      │                         │
+│  Your model (text)       │──→──→│  qwen2.5vl:7b (vision)  │
 │  DeepSeek / text-only    │←──←──│                         │
-│                          │ text  │  "The screenshot shows  │
-│  "I can see that..."     │       │   a terminal with..."   │
-└──────────────────────────┘       └─────────────────────────┘
+│                          │ text │  "The screenshot shows  │
+│  "I can see that..."     │      │   a terminal with..."   │
+└──────────────────────────┘      └─────────────────────────┘
 ```
 
 1. The model runs `python vision.py` (clipboard, screen, or file)

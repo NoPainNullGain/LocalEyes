@@ -1,6 +1,6 @@
 # 👁️ LocalEyes
 
-**Vision for text-only LLMs in Claude Code.** Claude has native vision — but DeepSeek, CodeLlama, Qwen-Coder, and most other models don't. LocalEyes gives them working eyes via a local Ollama vision model. No cloud, no uploads, no API keys. Private, fast, free.
+**Vision for text-only LLMs in Claude Code.** Many flagship models like DeepSeek, CodeLlama, Qwen-Coder, and many other models don't have vision. LocalEyes gives them working eyes via a local Ollama vision model. No cloud, no uploads, no API keys. Private, fast, free.
 
 ### The problem
 

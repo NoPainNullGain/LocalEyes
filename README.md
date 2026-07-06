@@ -4,9 +4,9 @@
 
 ### The problem
 
-You're running DeepSeek (or another text-only model) in Claude Code. It's brilliant at reasoning but completely blind — it can't see screenshots, UIs, error dialogs, or anything visual. The "solution" most people reach for is uploading images to GPT-4V or Claude's API. That means sending your screen to a cloud provider.
+DeepSeek is brilliant at reasoning. It's also completely blind. No screenshots, no UIs, no error dialogs — it can't see any of it. The usual fix is uploading your images to GPT-4 or Gemini and asking a second model to describe what's on screen. That breaks the agentic loop. It also means your screenshots are sitting on a cloud provider's server. Neither is ideal.
 
-This gives text-only models local vision. Your screen stays on your machine.
+LocalEyes gives text-only models local vision. Your screen stays on your machine.
 
 ### How it looks in practice
 

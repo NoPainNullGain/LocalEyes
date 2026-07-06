@@ -1,23 +1,28 @@
 # 👁️ LocalEyes
 
-**Give Claude Code working eyes using your local GPU.** No cloud APIs, no uploads, no cost. A local Ollama vision model converts screenshots into text descriptions Claude can read. Private, fast, free.
+**Vision for text-only LLMs in Claude Code.** Claude has native vision — but DeepSeek, CodeLlama, Qwen-Coder, and most other models don't. LocalEyes gives them working eyes via a local Ollama vision model. No cloud, no uploads, no API keys. Private, fast, free.
 
 ### The problem
-Claude Code (and most LLMs) can't see images. Other solutions upload screenshots to cloud vision APIs. This one stays on your machine — the vision model runs locally via Ollama.
+
+You're running DeepSeek (or another text-only model) in Claude Code. It's brilliant at reasoning but completely blind — it can't see screenshots, UIs, error dialogs, or anything visual. The "solution" most people reach for is uploading images to GPT-4V or Claude's API. That means sending your screen to a cloud provider.
+
+This gives text-only models local vision. Your screen stays on your machine.
 
 ### How it looks in practice
 
 ```
-You:    Win+Shift+S  (take a screenshot of an error dialog)
-You:    "what's wrong with this?"
-Claude: <grabs clipboard, sees error via vision model>
-Claude: "That's a TypeScript error in login.ts line 42 — the type
-         'User' is missing the 'email' property. Here's the fix..."
+You:     Win+Shift+S  (take a screenshot of an error dialog)
+You:     "what's wrong with this?"
+Model:   <grabs clipboard, routes through local vision model>
+Model:   "That's a TypeScript error in login.ts line 42 — the type
+          'User' is missing the 'email' property. Here's the fix..."
 
-Claude: <running build autonomously, it fails>
-Claude: <takes its own screenshot: python vision.py screen>
-Claude: "I can see 3 build errors in the terminal — fixing them now..."
+Model:   <running build autonomously, it fails>
+Model:   <takes its own screenshot: python vision.py screen>
+Model:   "I can see 3 build errors in the terminal — fixing them now..."
 ```
+
+The model literally sees your screen. On its own, when it needs to.
 
 ---
 
@@ -48,23 +53,23 @@ python ~/.claude/skills/local-eyes/vision.py
 
 | Mode | Trigger | Command |
 |------|---------|---------|
-| **User shows Claude** | You screenshot something and ask about it | `python vision.py` |
-| **Claude looks itself** | Claude decides it needs visual context during agentic work | `python vision.py screen` |
+| **You show the model** | You screenshot something and ask about it | `python vision.py` |
+| **Model looks itself** | Model decides it needs visual context during agentic work | `python vision.py screen` |
 
-### User mode
+### You show the model
 ```bash
 python vision.py                           # describe the clipboard screenshot
 python vision.py "What error is shown?"    # focused question
 ```
 
-### Agentic mode (Claude's own eyes)
+### Model looks itself (agentic mode)
 ```bash
 python vision.py screen                              # capture full display
 python vision.py screen "Transcribe the terminal"    # focused
 python vision.py screenshot.png                      # read a saved file
 ```
 
-Claude will use `screen` mode **on its own** during workflows — after builds, during debugging, when implementing UI from mockups. No prompt needed.
+The model will use `screen` mode **on its own** during workflows — after builds, during debugging, when implementing UI from mockups. No prompt needed.
 
 ---
 
@@ -101,18 +106,18 @@ export OLLAMA_VISION_MODEL="qwen3-vl:latest"
 ┌──────────────────────────┐       ┌─────────────────────────┐
 │   Claude Code            │       │  Your machine (Ollama)   │
 │                          │       │                         │
-│  Main model (text)       │──→──→│  qwen2.5vl:7b (vision)   │
-│  DeepSeek / Claude       │←──←──│                         │
+│  Your model (text)       │──→──→│  qwen2.5vl:7b (vision)   │
+│  DeepSeek / text-only    │←──←──│                         │
 │                          │ text  │  "The screenshot shows  │
 │  "I can see that..."     │       │   a terminal with..."   │
 └──────────────────────────┘       └─────────────────────────┘
 ```
 
-1. Claude runs `python vision.py` (clipboard, screen, or file)
+1. The model runs `python vision.py` (clipboard, screen, or file)
 2. Script captures the image, base64-encodes it
 3. Sent to Ollama's local API at `localhost:11434`
 4. Qwen2.5-VL returns a detailed text description
-5. Claude reads the description and reasons about it
+5. The model reads the description and reasons about it
 
 **Nothing leaves your machine.**
 

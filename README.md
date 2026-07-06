@@ -8,21 +8,11 @@ DeepSeek is brilliant at reasoning. It's also completely blind. No screenshots, 
 
 LocalEyes gives text-only models local vision. Your screen stays on your machine.
 
-### How it looks in practice
+### Demo
 
-```
-You:     Win+Shift+S  (take a screenshot of an error dialog)
-You:     "what's wrong with this?"
-Model:   <grabs clipboard, routes through local vision model>
-Model:   "That's a TypeScript error in login.ts line 42 — the type
-          'User' is missing the 'email' property. Here's the fix..."
+![LocalEyes demo](demo.gif)
 
-Model:   <running build autonomously, it fails>
-Model:   <takes its own screenshot: python vision.py screen>
-Model:   "I can see 3 build errors in the terminal — fixing them now..."
-```
-
-The model literally sees your screen. On its own, when it needs to.
+The model takes a screenshot, reads error messages from VS Code, then captures its own display to check build output — all locally, no cloud involved.
 
 ---
 

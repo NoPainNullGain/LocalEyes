@@ -1,141 +1,138 @@
 #!/usr/bin/env python3
-"""Generate demo.gif for the LocalEyes README."""
+"""Generate demo.gif — before/after: DeepSeek blind → LocalEyes gives sight."""
 
 from PIL import Image, ImageDraw, ImageFont
 
 W, H = 780, 520
 BG = (22, 22, 22)
-PROMPT_COLOR = (100, 255, 100)
-OUTPUT_COLOR = (220, 220, 220)
-DIM_COLOR = (120, 120, 120)
+PROMPT = (100, 255, 100)     # green prompt
+OUTPUT = (220, 220, 220)     # white text
+DIM = (120, 120, 120)        # grey/dim
+ERROR = (255, 80, 80)        # red errors
+ACCENT = (100, 200, 255)     # blue highlights
 HEADER_BG = (15, 15, 15)
 HEADER_TEXT = (160, 160, 160)
-ACCENT = (100, 200, 255)
-RED = (255, 100, 100)
-ORANGE = (255, 180, 80)
 
 FONT = ImageFont.truetype("C:/Windows/Fonts/consola.ttf", 14)
-FONT_SMALL = ImageFont.truetype("C:/Windows/Fonts/consola.ttf", 12)
+FONT_SM = ImageFont.truetype("C:/Windows/Fonts/consola.ttf", 12)
 
-PAD_X = 24
-PAD_Y = 44
-LINE_H = 20
+PX, PY, LH = 24, 44, 20
 
 
-def new_frame():
+def frame():
     img = Image.new("RGB", (W, H), BG)
-    draw = ImageDraw.Draw(img)
-    draw.rectangle([0, 0, W, 30], fill=HEADER_BG)
-    draw.text((12, 8), "● ● ●   Terminal — LocalEyes Demo", fill=HEADER_TEXT, font=FONT_SMALL)
-    return img, draw
+    d = ImageDraw.Draw(img)
+    d.rectangle([0, 0, W, 30], fill=HEADER_BG)
+    d.text((12, 8), "● ● ●   Terminal — LocalEyes", fill=HEADER_TEXT, font=FONT_SM)
+    return img, d
 
 
-def draw_lines(img, draw, lines, start_y=PAD_Y):
-    """lines: list of (text, color, x_offset) — x_offset optional."""
-    y = start_y
+def render(lines):
+    """lines: list of (text, color, x_offset). x_offset optional."""
+    img, d = frame()
+    y = PY
     for item in lines:
-        if isinstance(item, tuple):
-            text = item[0]
-            color = item[1] if len(item) >= 2 else OUTPUT_COLOR
-            x = item[2] if len(item) >= 3 else PAD_X
-        else:
-            text, color, x = item, OUTPUT_COLOR, PAD_X
-        draw.text((x, y), text, fill=color, font=FONT)
-        y += LINE_H
+        txt = item[0]
+        clr = item[1] if len(item) > 1 else OUTPUT
+        x = item[2] if len(item) > 2 else PX
+        d.text((x, y), txt, fill=clr, font=FONT)
+        y += LH
     return img
 
 
-frames = []
+# ── SCENE 1: DeepSeek is blind ──────────────────────────────────────────────
 
-# Frame 1: command entered
-frames.append((lambda: draw_lines(*new_frame(), [
-    ("$ python vision.py", PROMPT_COLOR),
-]), 1000))
+s1 = render([
+    ("$ deepseek-v4-pro (Claude Code)", PROMPT),
+    ("", OUTPUT),
+    ("User: Look at this screenshot of my app", (255, 220, 100)),
+    ("       C:\\git\\ClaudeLocalEyes\\PligtlyFrontPage.jpg", (255, 220, 100)),
+    ("", OUTPUT),
+    ("DeepSeek:", PROMPT),
+    ("  I cannot view or process images directly.", ERROR),
+    ("  I'm a text-only model. I have no way to see", ERROR),
+    ("  what's in that screenshot.", ERROR),
+    ("", OUTPUT),
+    ("  Try describing it to me, or use a cloud vision", DIM),
+    ("  API like GPT-4 to get a description first.", DIM),
+])
 
-# Frame 2: loading
-frames.append((lambda: draw_lines(*new_frame(), [
-    ("$ python vision.py", DIM_COLOR),
-    ("", OUTPUT_COLOR),
-    ("  Grabbing image from clipboard...", DIM_COLOR),
-]), 1200))
+# ── SCENE 2: Install LocalEyes ──────────────────────────────────────────────
 
-# Frame 3-4: vision response
-frames.append((lambda: draw_lines(*new_frame(), [
-    ("$ python vision.py", DIM_COLOR),
-    ("", OUTPUT_COLOR),
-    ("  Screenshot — VS Code with a TypeScript error.", OUTPUT_COLOR),
-    ("", OUTPUT_COLOR),
-    ("  Visible text:", OUTPUT_COLOR),
-    ('  src/auth/login.ts:42 — TS2345:', RED),
-    ('    Argument of type "User" is not assignable to', RED),
-    ('    parameter of type "AuthPayload".', RED),
-    ('    Property "email" is missing in type "User".', RED),
-    ("", OUTPUT_COLOR),
-    ("  Layout: File tree on left, editor center, minimap right.", OUTPUT_COLOR),
-    ("  Error underlined in red. Status bar: '1 problem'.", OUTPUT_COLOR),
-    ("  Dark+ theme, line 42 highlighted.", OUTPUT_COLOR),
-]), 5000))
+s2 = render([
+    ("$ pip install Pillow && python install.py", PROMPT),
+    ("  COPY  vision.py -> ~/.claude/skills/local-eyes/", DIM),
+    ("  COPY  SKILL.md  -> ~/.claude/skills/local-eyes/", DIM),
+    ("  COPY  config.json -> ~/.claude/skills/local-eyes/", DIM),
+    ("  Done. Skill installed.", DIM),
+    ("", OUTPUT),
+    ("$ # Now let's try that image again...", DIM),
+])
 
-# Frame 5: agentic mode — model looks itself
-frames.append((lambda: draw_lines(*new_frame(), [
-    ("$ python vision.py", DIM_COLOR),
-    ("  ... (output above) ...", DIM_COLOR),
-    ("", OUTPUT_COLOR),
-    ("$ python vision.py screen", PROMPT_COLOR),
-]), 1200))
+# ── SCENE 3: LocalEyes describes the image (real output, condensed) ────────
 
-# Frame 6: model captures its own screen
-frames.append((lambda: draw_lines(*new_frame(), [
-    ("$ python vision.py", DIM_COLOR),
-    ("  ... (output above) ...", DIM_COLOR),
-    ("", OUTPUT_COLOR),
-    ("$ python vision.py screen", DIM_COLOR),
-    ("", OUTPUT_COLOR),
-    ("  Capturing display...", DIM_COLOR),
-]), 800))
+s3 = render([
+    ("$ python vision.py PligtlyFrontPage.jpg", PROMPT),
+    ("", OUTPUT),
+    ("  Mobile app — dark blue background. Top center:", (180, 180, 180)),
+    ("  shield icon with checkmark, gradient pink-to-red,", (180, 180, 180)),
+    ("  gold coins and stars around it.", (180, 180, 180)),
+    ("", OUTPUT),
+    ('  Title: "Pligtly" — bold, light purple font.', OUTPUT),
+    ('  Subtitle: "Gor pligter til leg!"', OUTPUT),
+    ("", OUTPUT),
+    ("  Two buttons:", OUTPUT),
+    ("  1. [pink smiley] Jeg er foraelder", OUTPUT),
+    ("     Administrer opgaver og belonninger", DIM),
+    ("  2. [star icon]   Jeg er barn", OUTPUT),
+    ("     Faerdiggor opgaver og pas dit kaeledyr", DIM),
+    ("", OUTPUT),
+    ("  Bottom: Privatlivspolitik link.", DIM),
+])
 
-# Frame 7-8: agentic response
-frames.append((lambda: draw_lines(*new_frame(), [
-    ("$ python vision.py", DIM_COLOR),
-    ("  ... (output above) ...", DIM_COLOR),
-    ("", OUTPUT_COLOR),
-    ("$ python vision.py screen", DIM_COLOR),
-    ("", OUTPUT_COLOR),
-    ("  Full display — 2560x1440. Two windows visible:", OUTPUT_COLOR),
-    ("", OUTPUT_COLOR),
-    ("  Left: VS Code. login.ts open at line 42.", OUTPUT_COLOR),
-    ("  Right: Terminal showing build output.", OUTPUT_COLOR),
-    ("  Build: 3 TypeScript errors, 0 warnings.", ORANGE),
-    ("", OUTPUT_COLOR),
-    ("  Errors in: login.ts:42, routes.ts:88, format.ts:15", ORANGE),
-    ("  All three: missing 'email' property on User type.", ORANGE),
-]), 6000))
+# ── SCENE 4: DeepSeek now "sees" the app ────────────────────────────────────
 
-# Frame 9: closing tagline
-frames.append((lambda: draw_lines(*new_frame(), [
-    ("$ python vision.py", DIM_COLOR),
-    ("  ... (output above) ...", DIM_COLOR),
-    ("", OUTPUT_COLOR),
-    ("$ python vision.py screen", DIM_COLOR),
-    ("  Full display — 2560x1440. Two windows visible:", DIM_COLOR),
-    ("", OUTPUT_COLOR),
+s4 = render([
+    ("$ python vision.py PligtlyFrontPage.jpg", DIM),
+    ("  ...", DIM),
+    ("", OUTPUT),
+    ("DeepSeek (now with vision):", PROMPT),
+    ("", OUTPUT),
+    ("  This is a Danish chore-tracking app for families.", OUTPUT),
+    ("  Parents manage tasks and rewards; kids complete", OUTPUT),
+    ("  them and care for a virtual pet. Clean two-role", OUTPUT),
+    ("  design with clear parent/child onboarding paths.", OUTPUT),
+    ("", OUTPUT),
+    ("  The shield + coins suggest a gamified reward system.", OUTPUT),
+    ("  Privacy link at bottom — GDPR-aware. Mobile-first.", OUTPUT),
+    ("", OUTPUT),
+    ("  Want me to help with the UI, translations, or build", OUTPUT),
+    ("  something similar?", OUTPUT),
+])
+
+# ── SCENE 5: Agentic mode — model sees on its own ───────────────────────────
+
+s5 = render([
+    ("$ python vision.py screen  # model checks build output", PROMPT),
+    ("", OUTPUT),
+    ("  Full display — 2560x1440. Terminal + VS Code visible.", OUTPUT),
+    ("  Build passed. No errors in output.", (100, 255, 100)),
+    ("", OUTPUT),
     ("  ▸ 100% local — nothing leaves your machine", ACCENT),
-    ("  ▸ Works with any text-only LLM in Claude Code", ACCENT),
-    ("  ▸ Agentic-ready: model sees on its own", ACCENT),
-]), 4500))
+    ("  ▸ Works with DeepSeek, CodeLlama, Qwen, any text-only LLM", ACCENT),
+    ("  ▸ Model takes screenshots on its own during agentic work", ACCENT),
+    ("", OUTPUT),
+    ("  github.com/NoPainNullGain/LocalEyes", DIM),
+])
 
-# Render
+frames = [(s1, 3500), (s2, 2500), (s3, 6000), (s4, 5500), (s5, 4500)]
+
 print("Rendering demo.gif...")
-gif_frames = []
-for i, (fn, dur) in enumerate(frames):
-    gif_frames.append(fn())
-    print(f"  Frame {i+1}/{len(frames)}")
-
+gif_frames = [f[0] for f in frames]
+durations = [f[1] for f in frames]
 gif_frames[0].save(
-    "demo.gif",
-    save_all=True,
-    append_images=gif_frames[1:],
-    duration=[f[1] for f in frames],
-    loop=0,
+    "demo.gif", save_all=True, append_images=gif_frames[1:],
+    duration=durations, loop=0,
 )
-print(f"Done: demo.gif ({len(frames)} frames, ~{sum(f[1] for f in frames)//1000}s loop)")
+total = sum(durations) / 1000
+print(f"Done: demo.gif ({len(frames)} frames, ~{total:.0f}s loop)")

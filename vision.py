@@ -234,6 +234,12 @@ def describe_image(image_bytes: bytes, prompt: str | None = None) -> str:
 # ── main ─────────────────────────────────────────────────────────────────────
 
 def main():
+    # Fix Unicode output on Windows terminals (cp1252 → utf-8)
+    if os.name == "nt":
+        sys.stdout = io.TextIOWrapper(
+            sys.stdout.buffer, encoding="utf-8", errors="replace"
+        )
+
     if len(sys.argv) < 2:
         # No args = clipboard
         source = "clipboard"
